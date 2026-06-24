@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, master, develop]
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ci-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── 1. Lint ────────────────────────────────────────────────────────────────
+  lint:
+    name: Lint (Ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Run ruff check
+        run: ruff check backend/
+
+  # ── 2. Unit Tests (no external services) ──────────────────────────────────
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: backend/requirements-test.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements-test.txt
+
+      - name: Run unit tests
+        run: >
+          pytest tests/test_phase2.py
+          -v
+          -k "test_memory_scorer or test_working_memory"
+          --tb=short
+        env:
+          DASHSCOPE_API_KEY: dummy-key-for-unit-tests
+          REDIS_URL: redis://localhost:6379
+          CHROMA_DB_PATH: ./chroma_db
+
+  # ── 3. Integration Tests (Redis service container) ─────────────────────────
+  integration-tests:
+    name: Integration Tests (Redis)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: backend/requirements-test.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements-test.txt
+
+      - name: Run episodic memory tests
+        run: >
+          pytest tests/test_phase2.py
+          -v
+          -k "test_episodic_memory"
+          --asyncio-mode=auto
+          --tb=short
+        env:
+          DASHSCOPE_API_KEY: dummy-key-for-ci
+          REDIS_URL: redis://localhost:6379
+          CHROMA_DB_PATH: ./chroma_db
+
+  # ── 4. Docker Build ────────────────────────────────────────────────────────
+  docker-build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: false
+          tags: memoryweave-backend:pr-${{ github.event.pull_request.number }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
