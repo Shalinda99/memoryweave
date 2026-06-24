@@ -6,13 +6,17 @@ import {
   BarChart2,
   ChevronDown,
   Plus,
+  Layers,
+  TrendingUp,
 } from "lucide-react";
 import ChatPanel from "./components/ChatPanel";
 import MemoryPanel from "./components/MemoryPanel";
 import MetricsPanel from "./components/MetricsPanel";
+import TimelinePanel from "./components/TimelinePanel";
+import AccuracyPanel from "./components/AccuracyPanel";
 import { api, MemoriesResponse } from "./api/client";
 
-type Tab = "chat" | "memories" | "metrics";
+type Tab = "chat" | "memories" | "metrics" | "timeline" | "accuracy";
 
 const PRESET_USERS = ["alice", "bob", "carol", "dave"];
 
@@ -63,6 +67,8 @@ export default function App() {
     { id: "chat", label: "Chat", icon: <MessageSquare size={15} /> },
     { id: "memories", label: "Memories", icon: <Database size={15} /> },
     { id: "metrics", label: "Metrics", icon: <BarChart2 size={15} /> },
+    { id: "timeline", label: "Timeline", icon: <Layers size={15} /> },
+    { id: "accuracy", label: "Accuracy", icon: <TrendingUp size={15} /> },
   ];
 
   return (
@@ -177,6 +183,8 @@ export default function App() {
           />
         )}
         {tab === "metrics" && <MetricsPanel userId={userId} />}
+        {tab === "timeline" && <TimelinePanel userId={userId} />}
+        {tab === "accuracy" && <AccuracyPanel userId={userId} />}
       </div>
 
       {/* Click-away for user menu */}

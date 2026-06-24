@@ -57,6 +57,47 @@ export interface ExportResponse {
   episodic: object[];
 }
 
+export interface TimelineEvent {
+  id: string;
+  type: "semantic" | "episodic";
+  memory_type: string;
+  content: string;
+  importance_score: number;
+  access_count: number;
+  timestamp: string;
+  date: string;
+}
+
+export interface TimelineGroup {
+  date: string;
+  events: TimelineEvent[];
+  count: number;
+}
+
+export interface TimelineResponse {
+  user_id: string;
+  total_events: number;
+  groups: TimelineGroup[];
+}
+
+export interface BenchmarkSession {
+  session: number;
+  baseline_recall: number;
+  memory_recall: number;
+  memories_available: number;
+}
+
+export interface BenchmarkResponse {
+  user_id: string;
+  total_memories: number;
+  baseline_accuracy: number;
+  memory_accuracy: number;
+  improvement_factor: number;
+  total_memory_accesses: number;
+  avg_importance_score: number;
+  sessions: BenchmarkSession[];
+}
+
 async function request<T>(
   path: string,
   options?: RequestInit
@@ -115,4 +156,10 @@ export const api = {
     request<{ cleared: string }>(`/api/v1/sessions/${session_id}`, {
       method: "DELETE",
     }),
+
+  getTimeline: (user_id: string) =>
+    request<TimelineResponse>(`/api/v1/timeline/${user_id}`),
+
+  getBenchmark: (user_id: string) =>
+    request<BenchmarkResponse>(`/api/v1/benchmark/${user_id}`),
 };
