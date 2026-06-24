@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 860" width="760" height="860" font-family="Inter, system-ui, sans-serif">
+  <!-- Background -->
+  <rect width="760" height="860" fill="#0f172a" rx="16"/>
+
+  <!-- Title -->
+  <text x="380" y="42" text-anchor="middle" fill="#e2e8f0" font-size="20" font-weight="700">MemoryWeave Architecture</text>
+  <text x="380" y="62" text-anchor="middle" fill="#64748b" font-size="12">Persistent Hierarchical Memory for Qwen-Powered AI Agents</text>
+  <text x="380" y="79" text-anchor="middle" fill="#64748b" font-size="11">Global AI Hackathon · Track 1: MemoryAgent · Alibaba Cloud Qwen</text>
+
+  <!-- ── Browser / User ── -->
+  <rect x="270" y="102" width="220" height="52" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+  <text x="380" y="122" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600">USER BROWSER</text>
+  <text x="380" y="140" text-anchor="middle" fill="#cbd5e1" font-size="12" font-weight="700">React Dashboard (Vercel)</text>
+  <text x="380" y="154" text-anchor="middle" fill="#64748b" font-size="9">Chat · Memories · Metrics · Timeline · Accuracy</text>
+
+  <!-- Arrow: Browser → API Gateway -->
+  <line x1="380" y1="154" x2="380" y2="188" stroke="#475569" stroke-width="1.5" stroke-dasharray="4 2"/>
+  <polygon points="375,186 385,186 380,194" fill="#475569"/>
+  <text x="395" y="175" fill="#64748b" font-size="9">HTTPS / REST</text>
+
+  <!-- ── FastAPI Backend ── -->
+  <rect x="100" y="198" width="560" height="260" rx="12" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="380" y="220" text-anchor="middle" fill="#93c5fd" font-size="11" font-weight="700">FASTAPI BACKEND (Render.com)</text>
+
+  <!-- Memory Orchestrator label -->
+  <rect x="120" y="232" width="520" height="214" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="380" y="252" text-anchor="middle" fill="#7dd3fc" font-size="10" font-weight="600">Memory Orchestrator</text>
+
+  <!-- Tier 1: Working Memory -->
+  <rect x="135" y="262" width="150" height="70" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.2"/>
+  <text x="210" y="282" text-anchor="middle" fill="#93c5fd" font-size="9" font-weight="700">TIER 1</text>
+  <text x="210" y="296" text-anchor="middle" fill="#dbeafe" font-size="11" font-weight="700">Working Memory</text>
+  <text x="210" y="310" text-anchor="middle" fill="#64748b" font-size="9">In-context (per session)</text>
+  <text x="210" y="324" text-anchor="middle" fill="#64748b" font-size="9">Token budget: 6,000</text>
+
+  <!-- Tier 2: Episodic -->
+  <rect x="305" y="262" width="150" height="70" rx="8" fill="#1e293b" stroke="#7c3aed" stroke-width="1.2"/>
+  <text x="380" y="282" text-anchor="middle" fill="#c4b5fd" font-size="9" font-weight="700">TIER 2</text>
+  <text x="380" y="296" text-anchor="middle" fill="#ede9fe" font-size="11" font-weight="700">Episodic Memory</text>
+  <text x="380" y="310" text-anchor="middle" fill="#64748b" font-size="9">Upstash Redis (TTL)</text>
+  <text x="380" y="324" text-anchor="middle" fill="#64748b" font-size="9">7–30 day recency window</text>
+
+  <!-- Tier 3: Semantic -->
+  <rect x="475" y="262" width="150" height="70" rx="8" fill="#1e293b" stroke="#059669" stroke-width="1.2"/>
+  <text x="550" y="282" text-anchor="middle" fill="#6ee7b7" font-size="9" font-weight="700">TIER 3</text>
+  <text x="550" y="296" text-anchor="middle" fill="#d1fae5" font-size="11" font-weight="700">Semantic Memory</text>
+  <text x="550" y="310" text-anchor="middle" fill="#64748b" font-size="9">ChromaDB (vectors)</text>
+  <text x="550" y="324" text-anchor="middle" fill="#64748b" font-size="9">Qwen text-embedding-v3</text>
+
+  <!-- Tier arrows (horizontal) -->
+  <line x1="285" y1="297" x2="305" y2="297" stroke="#475569" stroke-width="1.2"/>
+  <polygon points="301,293 309,297 301,301" fill="#475569"/>
+  <line x1="455" y1="297" x2="475" y2="297" stroke="#475569" stroke-width="1.2"/>
+  <polygon points="471,293 479,297 471,301" fill="#475569"/>
+
+  <!-- Memory Agent -->
+  <rect x="270" y="352" width="220" height="44" rx="8" fill="#292524" stroke="#f97316" stroke-width="1.2"/>
+  <text x="380" y="371" text-anchor="middle" fill="#fdba74" font-size="10" font-weight="700">MemoryAgent</text>
+  <text x="380" y="386" text-anchor="middle" fill="#78716c" font-size="9">Qwen-Max reasoning · memory-aware prompts</text>
+
+  <!-- Consolidation Pipeline -->
+  <rect x="135" y="352" width="120" height="44" rx="8" fill="#1e293b" stroke="#a16207" stroke-width="1"/>
+  <text x="195" y="371" text-anchor="middle" fill="#fbbf24" font-size="9" font-weight="700">Consolidation</text>
+  <text x="195" y="386" text-anchor="middle" fill="#78716c" font-size="9">Qwen-Long · nightly</text>
+
+  <!-- Smart Forgetting -->
+  <rect x="505" y="352" width="120" height="44" rx="8" fill="#1e293b" stroke="#be185d" stroke-width="1"/>
+  <text x="565" y="371" text-anchor="middle" fill="#f9a8d4" font-size="9" font-weight="700">Smart Forgetting</text>
+  <text x="565" y="386" text-anchor="middle" fill="#78716c" font-size="9">Score = R×F×I pruning</text>
+
+  <!-- REST API label -->
+  <text x="380" y="430" text-anchor="middle" fill="#64748b" font-size="9">REST API: /chat · /memories · /metrics · /consolidate · /timeline · /benchmark · /export</text>
+
+  <!-- Arrow: Backend → Qwen Cloud -->
+  <line x1="380" y1="458" x2="380" y2="494" stroke="#475569" stroke-width="1.5" stroke-dasharray="4 2"/>
+  <polygon points="375,492 385,492 380,500" fill="#475569"/>
+  <text x="395" y="480" fill="#64748b" font-size="9">API calls</text>
+
+  <!-- ── Qwen Cloud / Alibaba Cloud ── -->
+  <rect x="100" y="504" width="560" height="100" rx="12" fill="#1e293b" stroke="#f97316" stroke-width="1.5"/>
+  <text x="380" y="527" text-anchor="middle" fill="#fdba74" font-size="11" font-weight="700">ALIBABA CLOUD — Qwen APIs</text>
+  <text x="380" y="542" text-anchor="middle" fill="#78716c" font-size="9">https://dashscope-intl.aliyuncs.com/compatible-mode/v1</text>
+
+  <rect x="120" y="552" width="118" height="38" rx="6" fill="#0f172a" stroke="#f97316" stroke-width="1"/>
+  <text x="179" y="568" text-anchor="middle" fill="#fdba74" font-size="10" font-weight="600">qwen-max</text>
+  <text x="179" y="582" text-anchor="middle" fill="#64748b" font-size="9">chat + reasoning</text>
+
+  <rect x="250" y="552" width="118" height="38" rx="6" fill="#0f172a" stroke="#f97316" stroke-width="1"/>
+  <text x="309" y="568" text-anchor="middle" fill="#fdba74" font-size="10" font-weight="600">qwen-long</text>
+  <text x="309" y="582" text-anchor="middle" fill="#64748b" font-size="9">consolidation</text>
+
+  <rect x="380" y="552" width="118" height="38" rx="6" fill="#0f172a" stroke="#f97316" stroke-width="1"/>
+  <text x="439" y="568" text-anchor="middle" fill="#fdba74" font-size="10" font-weight="600">text-embedding-v3</text>
+  <text x="439" y="582" text-anchor="middle" fill="#64748b" font-size="9">semantic search</text>
+
+  <rect x="510" y="552" width="135" height="38" rx="6" fill="#0f172a" stroke="#f97316" stroke-width="1"/>
+  <text x="577" y="568" text-anchor="middle" fill="#fdba74" font-size="10" font-weight="600">qwen-turbo</text>
+  <text x="577" y="582" text-anchor="middle" fill="#64748b" font-size="9">fast scoring</text>
+
+  <!-- Arrow: Backend → Redis -->
+  <line x1="200" y1="458" x2="200" y2="618" stroke="#7c3aed" stroke-width="1.2" stroke-dasharray="4 2"/>
+  <polygon points="195,616 205,616 200,624" fill="#7c3aed"/>
+
+  <!-- Arrow: Backend → ChromaDB -->
+  <line x1="560" y1="458" x2="560" y2="618" stroke="#059669" stroke-width="1.2" stroke-dasharray="4 2"/>
+  <polygon points="555,616 565,616 560,624" fill="#059669"/>
+
+  <!-- ── Data Stores ── -->
+  <!-- Redis -->
+  <rect x="100" y="628" width="160" height="56" rx="10" fill="#1e293b" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="180" y="650" text-anchor="middle" fill="#c4b5fd" font-size="10" font-weight="700">Upstash Redis</text>
+  <text x="180" y="664" text-anchor="middle" fill="#64748b" font-size="9">Episodic TTL store</text>
+  <text x="180" y="677" text-anchor="middle" fill="#64748b" font-size="9">Free: 10k cmds/day</text>
+
+  <!-- ChromaDB -->
+  <rect x="500" y="628" width="160" height="56" rx="10" fill="#1e293b" stroke="#059669" stroke-width="1.5"/>
+  <text x="580" y="650" text-anchor="middle" fill="#6ee7b7" font-size="10" font-weight="700">ChromaDB</text>
+  <text x="580" y="664" text-anchor="middle" fill="#64748b" font-size="9">Semantic vector store</text>
+  <text x="580" y="677" text-anchor="middle" fill="#64748b" font-size="9">Embedded Python lib</text>
+
+  <!-- ── Key Algorithms ── -->
+  <rect x="100" y="710" width="560" height="100" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="380" y="731" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="700">KEY ALGORITHMS</text>
+
+  <!-- Algo boxes -->
+  <rect x="115" y="740" width="128" height="58" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="179" y="757" text-anchor="middle" fill="#7dd3fc" font-size="9" font-weight="600">Memory Scoring</text>
+  <text x="179" y="771" text-anchor="middle" fill="#64748b" font-size="8">0.4×recency</text>
+  <text x="179" y="783" text-anchor="middle" fill="#64748b" font-size="8">+0.3×freq+0.3×imp</text>
+  <text x="179" y="792" text-anchor="middle" fill="#64748b" font-size="8">→ prune if &lt; 0.2</text>
+
+  <rect x="255" y="740" width="128" height="58" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="319" y="757" text-anchor="middle" fill="#7dd3fc" font-size="9" font-weight="600">Consolidation</text>
+  <text x="319" y="771" text-anchor="middle" fill="#64748b" font-size="8">10 turns → 3 facts</text>
+  <text x="319" y="783" text-anchor="middle" fill="#64748b" font-size="8">contradiction detect</text>
+  <text x="319" y="792" text-anchor="middle" fill="#64748b" font-size="8">via qwen-long</text>
+
+  <rect x="395" y="740" width="128" height="58" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="459" y="757" text-anchor="middle" fill="#7dd3fc" font-size="9" font-weight="600">Context Packing</text>
+  <text x="459" y="771" text-anchor="middle" fill="#64748b" font-size="8">top-K by similarity</text>
+  <text x="459" y="783" text-anchor="middle" fill="#64748b" font-size="8">+ recency ranking</text>
+  <text x="459" y="792" text-anchor="middle" fill="#64748b" font-size="8">fits 6k token budget</text>
+
+  <rect x="535" y="740" width="110" height="58" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="590" y="757" text-anchor="middle" fill="#7dd3fc" font-size="9" font-weight="600">Accuracy Gain</text>
+  <text x="590" y="771" text-anchor="middle" fill="#64748b" font-size="8">Baseline: 7%</text>
+  <text x="590" y="783" text-anchor="middle" fill="#64748b" font-size="8">MemoryWeave: 93%</text>
+  <text x="590" y="792" text-anchor="middle" fill="#64748b" font-size="8">max recall</text>
+
+  <!-- Footer -->
+  <text x="380" y="838" text-anchor="middle" fill="#334155" font-size="9">MIT License · github.com/YOUR_USERNAME/memoryweave · Track 1: MemoryAgent</text>
+</svg>

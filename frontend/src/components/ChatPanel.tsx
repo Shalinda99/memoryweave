@@ -109,10 +109,10 @@ export default function ChatPanel({ userId, sessionId, onMemoryUpdate }: Props) 
         {messages.map((msg, i) => (
           <div
             key={i}
-            className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+            className={`flex gap-3 ${msg.role === "user" ? "justify-end animate-fade-in-right" : "justify-start animate-fade-in-left"}`}
           >
             {msg.role === "assistant" && (
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center mt-1">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center mt-1 glow-brand animate-brain-glow">
                 <Brain size={16} className="text-white" />
               </div>
             )}
@@ -121,8 +121,8 @@ export default function ChatPanel({ userId, sessionId, onMemoryUpdate }: Props) 
               <div
                 className={`rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
                   msg.role === "user"
-                    ? "bg-brand-600 text-white rounded-br-sm"
-                    : "bg-gray-800 text-gray-100 rounded-bl-sm border border-gray-700"
+                    ? "bg-brand-600 text-white rounded-br-sm shadow-lg shadow-brand-900/30"
+                    : "bg-gray-800/90 text-gray-100 rounded-bl-sm border border-gray-700/80 shadow-lg shadow-black/20"
                 }`}
               >
                 {msg.content}
@@ -170,13 +170,18 @@ export default function ChatPanel({ userId, sessionId, onMemoryUpdate }: Props) 
         ))}
 
         {loading && (
-          <div className="flex gap-3 justify-start">
-            <div className="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center">
+          <div className="flex gap-3 justify-start animate-fade-in-left">
+            <div className="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center glow-brand">
               <Brain size={16} className="text-white" />
             </div>
-            <div className="bg-gray-800 border border-gray-700 rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-2">
-              <Loader2 size={14} className="animate-spin text-brand-400" />
-              <span className="text-sm text-gray-400">Thinking…</span>
+            <div className="bg-gray-800/90 border border-gray-700/80 rounded-2xl rounded-bl-sm px-4 py-3.5 flex items-center gap-1.5">
+              {[0, 1, 2].map((n) => (
+                <span
+                  key={n}
+                  className="w-2 h-2 rounded-full bg-brand-400 inline-block"
+                  style={{ animation: `dotBounce 1.2s ease-in-out ${n * 0.18}s infinite` }}
+                />
+              ))}
             </div>
           </div>
         )}
@@ -208,7 +213,9 @@ export default function ChatPanel({ userId, sessionId, onMemoryUpdate }: Props) 
             className="flex-shrink-0 w-9 h-9 rounded-xl bg-brand-600 hover:bg-brand-500 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
           >
             {loading ? (
-              <Loader2 size={16} className="animate-spin text-white" />
+              <span className="w-4 h-4 flex items-center justify-center">
+                <Loader2 size={14} className="animate-spin text-white" />
+              </span>
             ) : (
               <Send size={16} className="text-white" />
             )}
