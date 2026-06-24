@@ -74,13 +74,14 @@ export default function App() {
   return (
     <div className="flex flex-col h-screen bg-gray-950 text-gray-100">
       {/* Header */}
-      <header className="relative flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-gray-950 flex-shrink-0 overflow-hidden">
-        {/* Subtle background glow */}
+      <header className="relative flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-gray-950 flex-shrink-0">
+        {/* Subtle background glow — pointer-events-none so it never blocks interaction */}
         <div
-          className="pointer-events-none absolute inset-0 opacity-20"
+          className="pointer-events-none absolute inset-x-0 top-0 bottom-0 opacity-20"
           style={{
             background:
-              "radial-gradient(ellipse 60% 80% at 0% 50%, rgba(79,110,247,0.25) 0%, transparent 70%)",
+              "radial-gradient(ellipse 50% 100% at 0% 50%, rgba(79,110,247,0.3) 0%, transparent 65%)",
+            zIndex: 0,
           }}
         />
 
@@ -99,7 +100,7 @@ export default function App() {
         </div>
 
         {/* User selector */}
-        <div className="relative">
+        <div className="relative z-50">
           <button
             onClick={() => setShowUserMenu((v) => !v)}
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 border border-gray-700 text-sm transition-colors"
