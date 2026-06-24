@@ -1,9 +1,6 @@
 # Environment variables — NEVER commit these
 .env
 
-# Markdown docs (keep only README.md)
-*.md
-!README.md
 
 # Python
 __pycache__/

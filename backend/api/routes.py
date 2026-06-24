@@ -223,3 +223,98 @@ async def get_stats(user_id: str, req: Request):
         "episodic_memories": episodic_count,
         "active_sessions": len(orchestrator._sessions),
     }
+
+
+@router.get("/metrics/{user_id}")
+async def get_metrics(user_id: str, req: Request):
+    """Get detailed memory health metrics for a user — used by the Phase 3 dashboard."""
+    orchestrator = _get_orchestrator(req)
+
+    semantic_task = asyncio.to_thread(orchestrator.semantic.get_all, user_id)
+    episodic_task = orchestrator.episodic.count(user_id)
+    semantic_mems, episodic_count = await asyncio.gather(semantic_task, episodic_task)
+
+    scorer = orchestrator.scorer
+    health_scores: list[float] = []
+    type_breakdown: dict[str, int] = {
+        "preference": 0,
+        "fact": 0,
+        "skill": 0,
+        "relationship": 0,
+    }
+    prune_candidates = 0
+
+    for mem in semantic_mems:
+        ms = scorer.score(
+            memory_id=mem.id,
+            last_accessed=mem.last_accessed,
+            access_count=mem.access_count,
+            importance_score=mem.importance_score,
+        )
+        health_scores.append(ms.final_score)
+        if ms.should_prune:
+            prune_candidates += 1
+        mem_type = mem.memory_type.value
+        type_breakdown[mem_type] = type_breakdown.get(mem_type, 0) + 1
+
+    avg_health = round(sum(health_scores) / len(health_scores), 4) if health_scores else 0.0
+    top_memories = sorted(
+        semantic_mems, key=lambda m: m.importance_score, reverse=True
+    )[:5]
+
+    return {
+        "user_id": user_id,
+        "semantic_memories": len(semantic_mems),
+        "episodic_memories": episodic_count,
+        "avg_health_score": avg_health,
+        "prune_candidates": prune_candidates,
+        "memory_type_breakdown": type_breakdown,
+        "active_sessions": len(orchestrator._sessions),
+        "top_memories": [
+            {
+                "id": m.id,
+                "content": m.content[:120],
+                "memory_type": m.memory_type.value,
+                "importance_score": m.importance_score,
+                "access_count": m.access_count,
+            }
+            for m in top_memories
+        ],
+    }
+
+
+@router.get("/export/{user_id}")
+async def export_memories(user_id: str, req: Request):
+    """Export all memories for a user as structured JSON (for demo / backup)."""
+    orchestrator = _get_orchestrator(req)
+
+    semantic_task = asyncio.to_thread(orchestrator.semantic.get_all, user_id)
+    episodic_task = orchestrator.episodic.retrieve(user_id, limit=200)
+    semantic_mems, episodic_mems = await asyncio.gather(semantic_task, episodic_task)
+
+    return {
+        "user_id": user_id,
+        "exported_at": __import__("datetime").datetime.utcnow().isoformat(),
+        "semantic": [
+            {
+                "id": m.id,
+                "content": m.content,
+                "memory_type": m.memory_type.value,
+                "importance_score": m.importance_score,
+                "created_at": m.created_at.isoformat(),
+                "last_accessed": m.last_accessed.isoformat(),
+                "access_count": m.access_count,
+            }
+            for m in semantic_mems
+        ],
+        "episodic": [
+            {
+                "id": m.id,
+                "summary": m.summary,
+                "created_at": m.created_at.isoformat(),
+                "importance_score": m.importance_score,
+                "retrieval_count": m.retrieval_count,
+            }
+            for m in episodic_mems
+        ],
+    }
