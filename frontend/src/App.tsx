@@ -74,13 +74,24 @@ export default function App() {
   return (
     <div className="flex flex-col h-screen bg-gray-950 text-gray-100">
       {/* Header */}
-      <header className="flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-gray-950 flex-shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center">
-            <Brain size={18} className="text-white" />
+      <header className="relative flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-gray-950 flex-shrink-0 overflow-hidden">
+        {/* Subtle background glow */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-20"
+          style={{
+            background:
+              "radial-gradient(ellipse 60% 80% at 0% 50%, rgba(79,110,247,0.25) 0%, transparent 70%)",
+          }}
+        />
+
+        <div className="relative flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center glow-brand animate-glow-pulse">
+            <Brain size={18} className="text-white animate-brain-glow" />
           </div>
           <div>
-            <h1 className="text-sm font-bold text-gray-100 leading-none">MemoryWeave</h1>
+            <h1 className="text-sm font-bold leading-none">
+              <span className="gradient-text">MemoryWeave</span>
+            </h1>
             <p className="text-[10px] text-gray-500 leading-none mt-0.5">
               Persistent AI Memory · Powered by Alibaba Cloud Qwen
             </p>
@@ -143,29 +154,36 @@ export default function App() {
       </header>
 
       {/* Tab bar */}
-      <div className="flex gap-0 border-b border-gray-800 bg-gray-950 flex-shrink-0 px-4">
+      <div className="flex gap-0 border-b border-gray-800 bg-gray-950/80 backdrop-blur-sm flex-shrink-0 px-3">
         {tabs.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+            className={`relative flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium transition-all duration-200 ${
               tab === t.id
-                ? "border-brand-500 text-brand-400"
-                : "border-transparent text-gray-500 hover:text-gray-300"
+                ? "text-brand-300"
+                : "text-gray-500 hover:text-gray-300"
             }`}
           >
             {t.icon}
             {t.label}
             {t.id === "memories" && memories && (
-              <span className="ml-1 text-[10px] bg-gray-800 text-gray-400 rounded-full px-1.5 py-0.5">
+              <span className="ml-0.5 text-[9px] bg-gray-800 text-gray-400 rounded-full px-1.5 py-0.5">
                 {memories.total}
               </span>
+            )}
+            {/* Active indicator */}
+            {tab === t.id && (
+              <span
+                className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-brand-500"
+                style={{ animation: "expandIn 0.25s ease both" }}
+              />
             )}
           </button>
         ))}
       </div>
 
-      {/* Main content */}
+      {/* Main content — key forces re-mount → re-triggers fade-in animation */}
       <div className="flex-1 overflow-hidden">
         {tab === "chat" && (
           <ChatPanel
@@ -175,16 +193,30 @@ export default function App() {
           />
         )}
         {tab === "memories" && (
-          <MemoryPanel
-            userId={userId}
-            memories={memories}
-            loading={memoriesLoading}
-            onRefresh={fetchMemories}
-          />
+          <div key={`memories-${userId}`} className="h-full animate-slide-in">
+            <MemoryPanel
+              userId={userId}
+              memories={memories}
+              loading={memoriesLoading}
+              onRefresh={fetchMemories}
+            />
+          </div>
         )}
-        {tab === "metrics" && <MetricsPanel userId={userId} />}
-        {tab === "timeline" && <TimelinePanel userId={userId} />}
-        {tab === "accuracy" && <AccuracyPanel userId={userId} />}
+        {tab === "metrics" && (
+          <div key={`metrics-${userId}`} className="h-full animate-slide-in">
+            <MetricsPanel userId={userId} />
+          </div>
+        )}
+        {tab === "timeline" && (
+          <div key={`timeline-${userId}`} className="h-full animate-slide-in">
+            <TimelinePanel userId={userId} />
+          </div>
+        )}
+        {tab === "accuracy" && (
+          <div key={`accuracy-${userId}`} className="h-full animate-slide-in">
+            <AccuracyPanel userId={userId} />
+          </div>
+        )}
       </div>
 
       {/* Click-away for user menu */}

@@ -21,18 +21,23 @@ function StatCard({
   value,
   sub,
   color,
+  delay = 0,
 }: {
   icon: React.ReactNode;
   label: string;
   value: string | number;
   sub?: string;
   color: string;
+  delay?: number;
 }) {
   return (
-    <div className={`rounded-xl border p-4 space-y-2 ${color}`}>
+    <div
+      className={`rounded-xl border p-4 space-y-2 card-hover animate-fade-in-up ${color}`}
+      style={{ animationDelay: `${delay}ms` }}
+    >
       <div className="flex items-center justify-between">
         <span className="text-xs text-gray-500 font-medium uppercase tracking-wide">{label}</span>
-        <div className="opacity-60">{icon}</div>
+        <div className="opacity-50">{icon}</div>
       </div>
       <p className="text-2xl font-bold text-gray-100">{value}</p>
       {sub && <p className="text-xs text-gray-500">{sub}</p>}
@@ -181,6 +186,7 @@ export default function MetricsPanel({ userId }: Props) {
           value={metrics?.semantic_memories ?? "—"}
           sub="Long-term facts in ChromaDB"
           color="bg-gray-900 border-gray-800"
+          delay={0}
         />
         <StatCard
           icon={<Clock size={18} />}
@@ -188,6 +194,7 @@ export default function MetricsPanel({ userId }: Props) {
           value={metrics?.episodic_memories ?? "—"}
           sub="Recent session summaries in Redis"
           color="bg-gray-900 border-gray-800"
+          delay={60}
         />
         <StatCard
           icon={<Activity size={18} />}
@@ -195,6 +202,7 @@ export default function MetricsPanel({ userId }: Props) {
           value={metrics ? `${(metrics.avg_health_score * 100).toFixed(0)}%` : "—"}
           sub="Recency × Frequency × Importance"
           color="bg-gray-900 border-gray-800"
+          delay={120}
         />
         <StatCard
           icon={<Shield size={18} />}
@@ -206,6 +214,7 @@ export default function MetricsPanel({ userId }: Props) {
               ? "bg-red-950 border-red-900"
               : "bg-gray-900 border-gray-800"
           }
+          delay={180}
         />
       </div>
 
@@ -263,12 +272,12 @@ export default function MetricsPanel({ userId }: Props) {
 
       {/* Active sessions */}
       {metrics && (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center justify-between">
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-center justify-between animate-fade-in-up" style={{ animationDelay: '220ms' }}>
           <div>
             <p className="text-sm font-medium text-gray-200">Active Sessions</p>
             <p className="text-xs text-gray-600">Currently open working memory contexts</p>
           </div>
-          <span className="text-3xl font-bold text-brand-400">{metrics.active_sessions}</span>
+          <span className="text-3xl font-bold text-brand-400 animate-glow-pulse">{metrics.active_sessions}</span>
         </div>
       )}
 

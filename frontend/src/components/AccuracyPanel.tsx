@@ -191,20 +191,23 @@ function StatCard({
   value,
   sub,
   highlight,
+  delay = 0,
 }: {
   icon: React.ReactNode;
   label: string;
   value: string;
   sub?: string;
   highlight?: boolean;
+  delay?: number;
 }) {
   return (
     <div
-      className={`rounded-xl border p-4 space-y-1 ${
+      className={`rounded-xl border p-4 space-y-1 card-hover animate-fade-in-up ${
         highlight
           ? "border-brand-700 bg-brand-900/20"
           : "border-gray-800 bg-gray-900"
       }`}
+      style={{ animationDelay: `${delay}ms` }}
     >
       <div className="flex items-center justify-between mb-1">
         <span className="text-xs text-gray-500 uppercase tracking-wide font-medium">
@@ -289,6 +292,7 @@ export default function AccuracyPanel({ userId }: Props) {
               label="Baseline Recall"
               value={pct(data.baseline_accuracy)}
               sub="No memory system"
+              delay={0}
             />
             <StatCard
               icon={<Brain size={16} />}
@@ -296,6 +300,7 @@ export default function AccuracyPanel({ userId }: Props) {
               value={pct(data.memory_accuracy)}
               sub="With all memories"
               highlight
+              delay={60}
             />
             <StatCard
               icon={<Zap size={16} />}
@@ -303,12 +308,14 @@ export default function AccuracyPanel({ userId }: Props) {
               value={`${data.improvement_factor}×`}
               sub="Recall multiplier"
               highlight
+              delay={120}
             />
             <StatCard
               icon={<MousePointerClick size={16} />}
               label="Memory Accesses"
               value={String(data.total_memory_accesses)}
               sub={`${data.total_memories} memories stored`}
+              delay={180}
             />
           </div>
 
