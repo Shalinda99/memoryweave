@@ -3,7 +3,6 @@ Working Memory Manager
 
 Manages the active in-context conversation window for the current session.
 Tracks token usage to stay within the Qwen model context limit.
-Implemented in Phase 2.
 """
 
 from dataclasses import dataclass, field
@@ -33,19 +32,37 @@ class WorkingMemoryManager:
         self.system_prompt: str = ""
 
     def set_system_prompt(self, prompt: str) -> None:
-        raise NotImplementedError("Implemented in Phase 2")
+        self.system_prompt = prompt
 
     def add_message(self, role: str, content: str) -> None:
-        raise NotImplementedError("Implemented in Phase 2")
+        self.messages.append(Message(role=role, content=content))
+        self.trim_to_budget()
 
     def get_context(self) -> list[dict]:
-        raise NotImplementedError("Implemented in Phase 2")
+        result: list[dict] = []
+        if self.system_prompt:
+            result.append({"role": "system", "content": self.system_prompt})
+        result.extend({"role": m.role, "content": m.content} for m in self.messages)
+        return result
 
     def estimate_tokens(self, text: str) -> int:
-        raise NotImplementedError("Implemented in Phase 2")
+        """Rough estimate: ~4 chars per token (conservative for mixed CJK/English)."""
+        return max(1, len(text) // 4)
+
+    def _total_tokens(self) -> int:
+        total = self.estimate_tokens(self.system_prompt)
+        for m in self.messages:
+            total += self.estimate_tokens(m.content)
+        return total
 
     def trim_to_budget(self) -> None:
-        raise NotImplementedError("Implemented in Phase 2")
+        """Drop oldest messages (preserving at least 2) until within token budget."""
+        while len(self.messages) > 2 and self._total_tokens() > self.max_tokens:
+            self.messages.pop(0)
 
     def clear(self) -> None:
         self.messages = []
+
+    @property
+    def turn_count(self) -> int:
+        return len(self.messages) // 2

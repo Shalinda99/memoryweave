@@ -4,6 +4,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DASHSCOPE_API_KEY: str = os.getenv("DASHSCOPE_API_KEY", "")
+DASHSCOPE_BASE_URL: str = os.getenv(
+    "DASHSCOPE_BASE_URL",
+    "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+)
 SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
 SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "")
 DATABASE_URL: str = os.getenv("DATABASE_URL", "")
