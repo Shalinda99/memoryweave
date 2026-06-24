@@ -2,7 +2,8 @@
 MemoryWeave — Qwen Cloud Client
 Alibaba Cloud DashScope Integration
 
-API Base URL: https://dashscope.aliyuncs.com/compatible-mode/v1
+API Base URL: https://dashscope-intl.aliyuncs.com/compatible-mode/v1  (international)
+             https://dashscope.aliyuncs.com/compatible-mode/v1         (China)
 This file demonstrates use of Alibaba Cloud services and APIs
 as required by the Global AI Hackathon Series with Qwen Cloud.
 
@@ -16,19 +17,18 @@ Alibaba Cloud services used:
 from openai import OpenAI
 from config import (
     DASHSCOPE_API_KEY,
+    DASHSCOPE_BASE_URL,
     QWEN_CHAT_MODEL,
     QWEN_LONG_MODEL,
     QWEN_EMBED_MODEL,
     QWEN_FAST_MODEL,
 )
 
-DASHSCOPE_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-
 
 class QwenClient:
     """
     Client for Alibaba Cloud Qwen models via DashScope API.
-    Uses the OpenAI-compatible endpoint at dashscope.aliyuncs.com.
+    Uses the OpenAI-compatible endpoint (international: dashscope-intl.aliyuncs.com).
     """
 
     def __init__(self):

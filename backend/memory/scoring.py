@@ -9,9 +9,9 @@ Computes a retention score for each memory based on:
 Score formula: score = (recency_weight * R) + (frequency_weight * F) + (importance_weight * I)
 
 Memories with score below the prune_threshold are candidates for deletion.
-Implemented in Phase 2.
 """
 
+import math
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -49,10 +49,13 @@ class MemoryScorer:
         self.recency_half_life_days = recency_half_life_days
 
     def compute_recency(self, last_accessed: datetime) -> float:
-        raise NotImplementedError("Implemented in Phase 2")
+        """Exponential decay: score = e^(-ln(2) * age_days / half_life)."""
+        age_days = (datetime.utcnow() - last_accessed).total_seconds() / 86400.0
+        return math.exp(-math.log(2) * age_days / self.recency_half_life_days)
 
     def compute_frequency(self, access_count: int, max_count: int = 50) -> float:
-        raise NotImplementedError("Implemented in Phase 2")
+        """Log-normalized frequency score in [0, 1]."""
+        return min(1.0, math.log1p(access_count) / math.log1p(max_count))
 
     def score(
         self,
@@ -61,7 +64,34 @@ class MemoryScorer:
         access_count: int,
         importance_score: float,
     ) -> MemoryScore:
-        raise NotImplementedError("Implemented in Phase 2")
+        r = self.compute_recency(last_accessed)
+        f = self.compute_frequency(access_count)
+        i = max(0.0, min(1.0, importance_score))
+        final = (
+            self.recency_weight * r
+            + self.frequency_weight * f
+            + self.importance_weight * i
+        )
+        return MemoryScore(
+            memory_id=memory_id,
+            recency_score=round(r, 4),
+            frequency_score=round(f, 4),
+            importance_score=round(i, 4),
+            final_score=round(final, 4),
+            should_prune=final < self.prune_threshold,
+        )
 
     def batch_score(self, memories: list[dict]) -> list[MemoryScore]:
-        raise NotImplementedError("Implemented in Phase 2")
+        """
+        Score a list of memory dicts.
+        Each dict must have: id, last_accessed (datetime), access_count (int), importance_score (float).
+        """
+        return [
+            self.score(
+                memory_id=m["id"],
+                last_accessed=m["last_accessed"],
+                access_count=m["access_count"],
+                importance_score=m["importance_score"],
+            )
+            for m in memories
+        ]
