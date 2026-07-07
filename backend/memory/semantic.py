@@ -14,6 +14,7 @@ from enum import Enum
 from typing import Callable
 
 import chromadb
+from chromadb.config import Settings
 
 logger = logging.getLogger("memoryweave.semantic")
 
@@ -63,7 +64,10 @@ class SemanticMemoryStore:
         self._collection = None
 
     def initialize(self) -> None:
-        self._client = chromadb.PersistentClient(path=self.chroma_path)
+        self._client = chromadb.PersistentClient(
+            path=self.chroma_path,
+            settings=Settings(anonymized_telemetry=False),
+        )
         self._collection = self._client.get_or_create_collection(
             name=self.COLLECTION_NAME,
             metadata={"hnsw:space": "cosine"},
